@@ -1,0 +1,851 @@
+{
+	"info": {
+		"_postman_id": "089c580f-765f-4138-b117-3645a454ec3c",
+		"name": "Job-Search-App",
+		"description": "# User APIs\n\n1. Sign Up\n2. Sign In\n    - Sign In using (email or mobileNumber) and password\n    - don’t forget to update the status to online after SignIn\n3. update account.\n    - you can update ( email , mobileNumber , recoveryEmail , DOB , lastName , firstName)\n    - if user update the email , mobileNumber make sure that the new data doesn’t conflict with any existing data in your database\n    - User must be loggedIn\n    - only the owner of the account can update his account data\n4. Delete account\n    - only the owner of the account can delete his account data\n    - User must be loggedIn\n5. Get user account data\n    - only the owner of the account can get his account data\n    - User must be loggedIn\n6. Get profile data for another user\n    - send the userId in params or query\n7. Update password\n8. Forget password ( without sending any email , make sure of your data security specially the OTP and the newPassword )\n9. Get all accounts associated to a specific recovery Email\n    \n\n# Company APIs\n\n1. Add company\n    - apply authorization with role ( Company_HR )\n2. Update company data\n    - only the company owner can update the data\n    - apply authorization with role ( Company_HR )\n3. Delete company data\n    - only the company owner can delete the data\n    - apply authorization with role ( Company_HR)\n4. Get company data\n    - send the companyId in params to get the desired company data\n    - return all jobs related to this company\n    - apply authorization with role ( Company_HR)\n5. Search for a company with a name.\n    - apply authorization with the role ( Company_HR and User)\n6. Get all applications for specific Jobs\n    - each company Owner can take a look at the applications for his jobs only, he has no access to other companies’ application\n    - return each application with the user data, not the userId\n    - apply authorization with role ( Company_HR )\n\n# Jobs APIs\n\n1. Add Job\n    - apply authorization with the role ( Company_HR )\n2. Update Job\n    - apply authorization with the role ( Company_HR )\n3. Delete Job\n    - apply authorization with the role ( Company_HR )\n4. Get all Jobs with their company’s information.\n    - apply authorization with the role ( User , Company_HR )\n5. Get all Jobs for a specific company.\n    - apply authorization with the role ( User , Company_HR )\n    - send the company name in the query and get this company jobs.\n6. Get all Jobs that match the following filters\n    - allow user to filter with workingTime , jobLocation , seniorityLevel and jobTitle,technicalSkills\n    - one or more of them should applied  \n        **Exmaple** : if the user selects the  \n        **workingTime** is **part-time** and the **jobLocation** is **onsite**  \n        , we need to return all jobs that match these conditions\n    - apply authorization with the role ( User , Company_HR )\n7. Apply to Job\n    - This API will add a new document in the application Collections with the new data\n    - apply authorization with the role ( User )\n\n# Bonus Points\n\n1. add an endpoint that collects the applications for a specific company on a specific day and create an Excel sheet with this data\n    \n\n# Must Implemented\n\n1. Apply validation for each API requires data\n    \n2. Apply authentication and authorization middleware\n    \n3. Apply the error handling for each API\n    \n4. Apply the **env** file\n    \n5. If there is any logic of code require to add a new field in the schema please go and add it.\n    \n6. Write comments before each API describes the steps of the API\n    \n7. Remove any console.log() before sending your exam except the **app.listen** and **dbConnection** logs\n    \n8. before send your exam you have to include the postman collections (**export your postman collection** ) and make sure that you save your changes on each request ( ctrl+s )\n    \n\n**YOU SHOULD TEST YOUR APIS IN POSTMAN**",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16297704",
+		"_collection_link": "https://www.postman.com/galactic-water-709147/workspace/route-node-js-baackend/collection/16297704-089c580f-765f-4138-b117-3645a454ec3c?action=share&source=collection_link&creator=16297704"
+	},
+	"item": [
+		{
+			"name": "User-APIs",
+			"item": [
+				{
+					"name": "sign-up",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Amira\",\r\n    \"lastName\": \"Ezzat\",\r\n    \"email\": \"amira@gmail.com\",\r\n    \"password\": \"123\",\r\n    \"cpass\": \"123\",\r\n    \"recoveryEmail\": \"amirarecoveyemail@gmail.com\",\r\n    \"DOB\": \"2010-10-10\",\r\n    \"mobileNumber\": \"0123456789\",\r\n    \"role\": \"Company_HR\",\r\n    \"status\": \"offline\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/user/sign-up",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"sign-up"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"amira@gmail.com\",\r\n    \"password\": \"123456789\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/user/sign-in",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"sign-in"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "accesstoken",
+								"value": "accesstokenjobsearchapp_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YjIyOTA1NjY3ZGVmYWRiYzBkZDVhYyIsInVzZXJFbWFpbCI6ImFtaXJhQGdtYWlsLmNvbSIsIm1vYmlsZU51bWJlclVzZXIiOiIwMTIzNDU2Nzg5IiwiaWF0IjoxNzA2MTc0NzI4LCJleHAiOjE3MDY0MzM5Mjh9.lrPo850T-svsig3mbNCn0AgTxgfwzdwcjARPp8NikTk",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"amiraFirstName Updated\",\r\n    \"lastName\": \"amiraLastName Updated\",\r\n    \"email\":\"amiraUpdated@gmail.com\",\r\n    \"mobileNumber\": \"01234567\",\r\n    \"recoveryEmail\":\"amirarecoveyemailupdated@gmail.com\",\r\n    \"DOB\": \"2012-12-12\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/user/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accesstoken",
+								"value": "accesstokenjobsearchapp_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YjIyOTA1NjY3ZGVmYWRiYzBkZDVhYyIsInVzZXJFbWFpbCI6ImFtaXJhQGdtYWlsLmNvbSIsIm1vYmlsZU51bWJlclVzZXIiOiIwMTIzNDU2Nzg5IiwiaWF0IjoxNzA2MTc0NzI4LCJleHAiOjE3MDY0MzM5Mjh9.lrPo850T-svsig3mbNCn0AgTxgfwzdwcjARPp8NikTk",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/user/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user-data",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accesstoken",
+								"value": "accesstokenjobsearchapp_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YjIyOTA1NjY3ZGVmYWRiYzBkZDVhYyIsInVzZXJFbWFpbCI6ImFtaXJhQGdtYWlsLmNvbSIsIm1vYmlsZU51bWJlclVzZXIiOiIwMTIzNDU2Nzg5IiwiaWF0IjoxNzA2MTc0NzI4LCJleHAiOjE3MDY0MzM5Mjh9.lrPo850T-svsig3mbNCn0AgTxgfwzdwcjARPp8NikTk",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/user/user-data",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"user-data"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-user-profile-data",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accesstoken",
+								"value": "accesstokenjobsearchapp_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YjIyOTA1NjY3ZGVmYWRiYzBkZDVhYyIsInVzZXJFbWFpbCI6ImFtaXJhQGdtYWlsLmNvbSIsIm1vYmlsZU51bWJlclVzZXIiOiIwMTIzNDU2Nzg5IiwiaWF0IjoxNzA2MTc0NzI4LCJleHAiOjE3MDY0MzM5Mjh9.lrPo850T-svsig3mbNCn0AgTxgfwzdwcjARPp8NikTk",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/user/user-profile-data/65b22905667defadbc0dd5ac",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"user-profile-data",
+								"65b22905667defadbc0dd5ac"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-password",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "accesstoken",
+								"value": "accesstokenjobsearchapp_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YjIyOTA1NjY3ZGVmYWRiYzBkZDVhYyIsInVzZXJFbWFpbCI6ImFtaXJhQGdtYWlsLmNvbSIsIm1vYmlsZU51bWJlclVzZXIiOiIwMTIzNDU2Nzg5IiwiaWF0IjoxNzA2MTc0NzI4LCJleHAiOjE3MDY0MzM5Mjh9.lrPo850T-svsig3mbNCn0AgTxgfwzdwcjARPp8NikTk",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldPassword\": \"123\",\r\n    \"newPassword\": \"123456\",\r\n    \"confirmedNewPassword\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/user/update-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"update-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "forget-password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"amira@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/user/forget-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"forget-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset-password",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "resettoken",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWIyMjkwNTY2N2RlZmFkYmMwZGQ1YWMiLCJlbWFpbCI6ImFtaXJhQGdtYWlsLmNvbSIsIm1vYmlsZU51bWJlciI6IjAxMjM0NTY3ODkiLCJPVFAiOiI5OTU2NCIsImlhdCI6MTcwNjIxMjg1OCwiZXhwIjoxNzA2MjEzNzU4fQ.ybDk94X_Rful6LUtZlyKaU_ZERQW6HiLkH3F6A7aKPs",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"OTP\":\"99564\",\r\n    \"newPassword\": \"123456789\",\r\n    \"confirmedNewPassword\": \"123456789\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/user/reset-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-accounts-with-recovery-email",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accesstoken",
+								"value": "accesstokenjobsearchapp_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YjIyOTA1NjY3ZGVmYWRiYzBkZDVhYyIsInVzZXJFbWFpbCI6ImFtaXJhQGdtYWlsLmNvbSIsIm1vYmlsZU51bWJlclVzZXIiOiIwMTIzNDU2Nzg5IiwiaWF0IjoxNzA2MTc0NzI4LCJleHAiOjE3MDY0MzM5Mjh9.lrPo850T-svsig3mbNCn0AgTxgfwzdwcjARPp8NikTk",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"recoveryEmail\" : \"amirarecoveyemail@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/user/get-accounts-with-recovery-email",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"get-accounts-with-recovery-email"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "**User APIs:**\n\n1. **Sign Up**\n    - **HTTP Method:** POST\n    - **Endpoint:** `user/sign-up`\n2. **Signin(with Create Token)**\n    - **HTTP Method:** POST\n    - **Endpoint:** `user/sign-in`\n    - Sign In using (email or mobileNumber) and password\n    - **Additional Info:** Creates and returns a token for authentication and update the status to online after SignIn.\n3. **Delete account (User Must Be Logged In)**\n    - **HTTP Method:** DELETE\n    - **Endpoint:** `user/delete`\n    - **Additional Info:** User must be logged in.\n4. **Get user account data**\n    - **HTTP Method:** GET\n    - **Endpoint:** `user/user-data`\n    - **Additional Info:** User must be logged in.\n5. **Get profile data for anothe user**\n    - **HTTP Method:** GET\n    - **Endpoint:** `user/user-profile-data/:userID`\n6. **Update password**\n    - **HTTP Method:** PUT\n    - **Endpoint:** `user/update-password`\n    - **Additional Info:** User must be logged in.\n7. **Forget password**\n    - **HTTP Method:** POST, PATCH\n    - **Endpoint:** `user/forget-password`\n    - **Endpoint:** `user/reset-password`\n    - **Additional Info:** Forget password (email or password) to generate OTP and resetToken and reset password with OTP and resettoken.\n8. **Get accounts with recovery email**\n    \n    - **HTTP Method:** GET\n    - **Endpoint:** `user/`get-accounts-with-recovery-email\n    - **Additional Info:** Users with the role 'Company_HR' are allowd to access the get accounts with recovery email endpoint."
+		},
+		{
+			"name": "Compant-APIs",
+			"item": [
+				{
+					"name": "add-company",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accesstoken",
+								"value": "accesstokenjobsearchapp_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YjIyOTA1NjY3ZGVmYWRiYzBkZDVhYyIsInVzZXJFbWFpbCI6ImFtaXJhQGdtYWlsLmNvbSIsIm1vYmlsZU51bWJlclVzZXIiOiIwMTIzNDU2Nzg5IiwiaWF0IjoxNzA2NTMzOTQyLCJleHAiOjE3MDY3OTMxNDJ9.LLlXdDsJGN_P9BJdZt1nUGE0wh_rqcGnjsCc-AM3KkY",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"companyName\":\"samsung\",\r\n    \"description\":\"samsung dessicribation\",\r\n    \"industry\": \"electraical\",\r\n    \"address\" : \"usa\",\r\n    \"numberOfEmployees\":\"5-40\",\r\n    \"companyEmail\": \"samsung@samsung.com\",\r\n    \"companyHR\": \"65b22905667defadbc0dd5ac\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/company/add-company",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"company",
+								"add-company"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-company",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "accesstoken",
+								"value": "accesstokenjobsearchapp_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YjIyOTA1NjY3ZGVmYWRiYzBkZDVhYyIsInVzZXJFbWFpbCI6ImFtaXJhQGdtYWlsLmNvbSIsIm1vYmlsZU51bWJlclVzZXIiOiIwMTIzNDU2Nzg5IiwiaWF0IjoxNzA2MjQwMTY4LCJleHAiOjE3MDY0OTkzNjh9.BTDhTmG9PyCYDPQAqEOX6g4L1VaB2qB9f_EPxfE8U68",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"companyName\":\"twitter updated\",\r\n    \"description\":\"social update\",\r\n    \"industry\": \"tech up\",\r\n    \"address\" : \"usa up\",\r\n    \"numberOfEmployees\":\"5-50\",\r\n    \"companyEmail\": \"tw@twitter.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/company/update-company/65b329c6b0c099f24935e185",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"company",
+								"update-company",
+								"65b329c6b0c099f24935e185"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-company",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accesstoken",
+								"value": "accesstokenjobsearchapp_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YjIyOTA1NjY3ZGVmYWRiYzBkZDVhYyIsInVzZXJFbWFpbCI6ImFtaXJhQGdtYWlsLmNvbSIsIm1vYmlsZU51bWJlclVzZXIiOiIwMTIzNDU2Nzg5IiwiaWF0IjoxNzA2MjQwMTY4LCJleHAiOjE3MDY0OTkzNjh9.BTDhTmG9PyCYDPQAqEOX6g4L1VaB2qB9f_EPxfE8U68",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/company/delete-company/65b329c6b0c099f24935e185",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"company",
+								"delete-company",
+								"65b329c6b0c099f24935e185"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-company-data",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accesstoken",
+								"value": "accesstokenjobsearchapp_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YjIyOTA1NjY3ZGVmYWRiYzBkZDVhYyIsInVzZXJFbWFpbCI6ImFtaXJhQGdtYWlsLmNvbSIsIm1vYmlsZU51bWJlclVzZXIiOiIwMTIzNDU2Nzg5IiwiaWF0IjoxNzA2MjQwMTY4LCJleHAiOjE3MDY0OTkzNjh9.BTDhTmG9PyCYDPQAqEOX6g4L1VaB2qB9f_EPxfE8U68",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/company//get-company-data/65b32fd410adb7d23d4467ad",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"company",
+								"",
+								"get-company-data",
+								"65b32fd410adb7d23d4467ad"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "search-company-by-name",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accesstoken",
+								"value": "accesstokenjobsearchapp_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YjIyOTA1NjY3ZGVmYWRiYzBkZDVhYyIsInVzZXJFbWFpbCI6ImFtaXJhQGdtYWlsLmNvbSIsIm1vYmlsZU51bWJlclVzZXIiOiIwMTIzNDU2Nzg5IiwiaWF0IjoxNzA2MjQwMTY4LCJleHAiOjE3MDY0OTkzNjh9.BTDhTmG9PyCYDPQAqEOX6g4L1VaB2qB9f_EPxfE8U68",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/company/search-company-name?companyName=twitter",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"company",
+								"search-company-name"
+							],
+							"query": [
+								{
+									"key": "companyName",
+									"value": "twitter"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-applications-jobs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accesstoken",
+								"value": "accesstokenjobsearchapp_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YjIyOTA1NjY3ZGVmYWRiYzBkZDVhYyIsInVzZXJFbWFpbCI6ImFtaXJhQGdtYWlsLmNvbSIsIm1vYmlsZU51bWJlclVzZXIiOiIwMTIzNDU2Nzg5IiwiaWF0IjoxNzA2NjExMjQ3LCJleHAiOjE3MDY4NzA0NDd9.yZYFk5JXktHNcnWsvwM9G0cHguhJrQIJ8s_axS94WEg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/company/get-application-jobs/twitter2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"company",
+								"get-application-jobs",
+								"twitter2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-applications-company-day",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accesstoken",
+								"value": "accesstokenjobsearchapp_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YjIyOTA1NjY3ZGVmYWRiYzBkZDVhYyIsInVzZXJFbWFpbCI6ImFtaXJhQGdtYWlsLmNvbSIsIm1vYmlsZU51bWJlclVzZXIiOiIwMTIzNDU2Nzg5IiwiaWF0IjoxNzA2NjEyNzY4LCJleHAiOjE3MDY4NzE5Njh9.Ey1bEH21Hbv81auU9rgGEiJHHUA_Ufs-4ix5DWEwJ1c",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/company/get-applications-company-day/twitter2/2024-01-30",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"company",
+								"get-applications-company-day",
+								"twitter2",
+								"2024-01-30"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Jobs APIs",
+			"item": [
+				{
+					"name": "add-job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accesstoken",
+								"value": "accesstokenjobsearchapp_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YjIyOTA1NjY3ZGVmYWRiYzBkZDVhYyIsInVzZXJFbWFpbCI6ImFtaXJhQGdtYWlsLmNvbSIsIm1vYmlsZU51bWJlclVzZXIiOiIwMTIzNDU2Nzg5IiwiaWF0IjoxNzA2NTQ1ODE2LCJleHAiOjE3MDY4MDUwMTZ9.1EpXr820pr0WgY-BfiPfbYJEDz9Lf63bywRZO11_Ve8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"jobTitle\":\"python delveloper\",\r\n    \"jobLocation\": \"onsite\",\r\n    \"workingTime\": \"full-time\",\r\n    \"seniorityLevel\": \"Junior\",\r\n    \"jobDescription\": \"python delveloper job Description\",\r\n    \"techinicalSkills\": [\"python\", \"problem solving\"],\r\n    \"softSkills\": [\"good comunication\", \"calboration\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/job/add-job",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"job",
+								"add-job"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-job",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "accesstoken",
+								"value": "accesstokenjobsearchapp_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YjIyOTA1NjY3ZGVmYWRiYzBkZDVhYyIsInVzZXJFbWFpbCI6ImFtaXJhQGdtYWlsLmNvbSIsIm1vYmlsZU51bWJlclVzZXIiOiIwMTIzNDU2Nzg5IiwiaWF0IjoxNzA2NTQ1ODE2LCJleHAiOjE3MDY4MDUwMTZ9.1EpXr820pr0WgY-BfiPfbYJEDz9Lf63bywRZO11_Ve8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"jobTitle\":\"python delveloper update\",\r\n    \"jobLocation\": \"onsite\",\r\n    \"workingTime\": \"full-time\",\r\n    \"seniorityLevel\": \"Junior\",\r\n    \"jobDescription\": \"python delveloper job Description updtae\",\r\n    \"techinicalSkills\": [\"python\", \"problem solving\"],\r\n    \"softSkills\": [\"good comunication\", \"calboration\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/job/update-job/65b7d2fff4ce9fc1d55da026",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"job",
+								"update-job",
+								"65b7d2fff4ce9fc1d55da026"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-job",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accesstoken",
+								"value": "accesstokenjobsearchapp_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YjIyOTA1NjY3ZGVmYWRiYzBkZDVhYyIsInVzZXJFbWFpbCI6ImFtaXJhQGdtYWlsLmNvbSIsIm1vYmlsZU51bWJlclVzZXIiOiIwMTIzNDU2Nzg5IiwiaWF0IjoxNzA2NTQ1ODE2LCJleHAiOjE3MDY4MDUwMTZ9.1EpXr820pr0WgY-BfiPfbYJEDz9Lf63bywRZO11_Ve8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/job/delete-job/65b7d34955322aca12eff6c9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"job",
+								"delete-job",
+								"65b7d34955322aca12eff6c9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-all-jobs-with-company",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accesstoken",
+								"value": "accesstokenjobsearchapp_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YjIyOTA1NjY3ZGVmYWRiYzBkZDVhYyIsInVzZXJFbWFpbCI6ImFtaXJhQGdtYWlsLmNvbSIsIm1vYmlsZU51bWJlclVzZXIiOiIwMTIzNDU2Nzg5IiwiaWF0IjoxNzA2NTQ1ODE2LCJleHAiOjE3MDY4MDUwMTZ9.1EpXr820pr0WgY-BfiPfbYJEDz9Lf63bywRZO11_Ve8",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/job/get-all-jobs-with-company",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"job",
+								"get-all-jobs-with-company"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-all-jobs-with-specific-company",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accesstoken",
+								"value": "accesstokenjobsearchapp_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YjIyOTA1NjY3ZGVmYWRiYzBkZDVhYyIsInVzZXJFbWFpbCI6ImFtaXJhQGdtYWlsLmNvbSIsIm1vYmlsZU51bWJlclVzZXIiOiIwMTIzNDU2Nzg5IiwiaWF0IjoxNzA2NTQ1ODE2LCJleHAiOjE3MDY4MDUwMTZ9.1EpXr820pr0WgY-BfiPfbYJEDz9Lf63bywRZO11_Ve8",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/job/get-all-jobs-specific-company?companyName=twitter2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"job",
+								"get-all-jobs-specific-company"
+							],
+							"query": [
+								{
+									"key": "companyName",
+									"value": "twitter2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-jobs-filters",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accesstoken",
+								"value": "accesstokenjobsearchapp_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YjIyOTA1NjY3ZGVmYWRiYzBkZDVhYyIsInVzZXJFbWFpbCI6ImFtaXJhQGdtYWlsLmNvbSIsIm1vYmlsZU51bWJlclVzZXIiOiIwMTIzNDU2Nzg5IiwiaWF0IjoxNzA2NTQ1ODE2LCJleHAiOjE3MDY4MDUwMTZ9.1EpXr820pr0WgY-BfiPfbYJEDz9Lf63bywRZO11_Ve8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"jobTitle\":\"python delveloper update\",\r\n    \"techinicalSkills\": [\"python\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/job/get-jobs-filters",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"job",
+								"get-jobs-filters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "apply-job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accesstoken",
+								"value": "accesstokenjobsearchapp_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YjhjYTk2ZTYzM2Q1ZTc5MzE2ZjFjZCIsInVzZXJFbWFpbCI6Im1haG1vdWRuYXNzZXJAZ21haWwuY29tIiwibW9iaWxlTnVtYmVyVXNlciI6IjAxMjM1NzQ2Nzg5IiwiaWF0IjoxNzA2NjA5MzMxLCJleHAiOjE3MDY4Njg1MzF9.Xt2ouINfqYia1CbMgef40jV2509KRB8JFbi3IIC-bkw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "resume",
+									"type": "file",
+									"src": "/D:/cv/cvpdf/cv mahmoud nasser v2.pdf"
+								},
+								{
+									"key": "jobId",
+									"value": "65b7d2fff4ce9fc1d55da026",
+									"type": "text"
+								},
+								{
+									"key": "userTechSkills",
+									"value": "[\"python\"]",
+									"type": "text"
+								},
+								{
+									"key": "userSoftSkills",
+									"value": "[\"good communiccation\"]",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/job/apply-job",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"job",
+								"apply-job"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
